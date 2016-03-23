@@ -1,9 +1,9 @@
 <?php
 /**
- * @link     https://github.com/old-town/zf2-test-toolkit
+ * @link     https://github.com/nnx-company/zf2-test-toolkit
  * @author  Malofeykin Andrey  <and-rey2@yandex.ru>
  */
-namespace OldTown\ZF2\Test\Toolkit\Listener;
+namespace Nnx\ZF2TestToolkit\Listener;
 
 use Exception;
 use PHPUnit_Framework_AssertionFailedError;
@@ -19,7 +19,7 @@ use PHPUnit_Framework_TestListener;
 /**
  * Class InitTestAppListener
  *
- * @package OldTown\ZF2\Test\Toolkit\Listener
+ * @package Nnx\ZF2TestToolkit\Listener
  */
 class InitTestAppListener extends AbstractListenerAggregate implements PHPUnit_Framework_TestListener
 {

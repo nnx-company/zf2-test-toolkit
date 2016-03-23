@@ -3,5 +3,5 @@ pages:
     - index.md
 site_name: zf2-test-toolkit
 site_description: 'Набор утилит для тестирования приложения на zf2'
-repo_url: 'https://github.com/old-town/zf2-test-toolkit'
-copyright: 'Copyright (c) 2016 <a href="https://github.com/old-town/">OldTown</a>'
+repo_url: 'https://github.com/nnx-company/zf2-test-toolkit'
+copyright: 'Copyright (c) 2016 <a href="https://github.com/nnx-company">NNX</a>'
