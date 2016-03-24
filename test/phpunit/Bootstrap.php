@@ -1,9 +1,9 @@
 <?php
 /**
- * @link     https://github.com/old-town/zf2-test-toolkit
+ * @link    https://github.com/nnx-company/zf2-test-toolkit
  * @author  Malofeykin Andrey  <and-rey2@yandex.ru>
  */
-namespace OldTown\ZF2\Test\Toolkit\PhpUnit\Test;
+namespace Nnx\ZF2TestToolkit\PhpUnit\Test;
 
 use Zend\Loader\AutoloaderFactory;
 use Zend\Loader\StandardAutoloader;
@@ -15,7 +15,7 @@ chdir(__DIR__);
 /**
  * Class Bootstrap
  *
- * @package OldTown\Workflow\ZF2\Toolkit\PhpUnit\Test
+ * @package Nnx\ZF2TestToolkit\PhpUnit\Test
  */
 class Bootstrap
 {
@@ -56,9 +56,8 @@ class Bootstrap
                 StandardAutoloader::class => [
                     'autoregister_zf' => true,
                     'namespaces' => [
-                        'OldTown\\ZF2\\Test\\Toolkit\\' => __DIR__ . '/../../src/',
-                        __NAMESPACE__ => __DIR__ . '/tests/',
-                        'OldTown\\ZF2\\Test\\Toolkit\\PhpUnit\\TestData' => __DIR__ . '/_files'
+                        'Nnx\\ZF2TestToolkit\\' => __DIR__ . '/../../src/',
+                        __NAMESPACE__ => __DIR__ . '/tests/'
                     ]
                 ]
             ]);

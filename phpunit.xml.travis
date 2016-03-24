@@ -12,7 +12,7 @@
         syntaxCheck="true"
         >
     <testsuites>
-        <testsuite name="Workflow Test Toolkit">
+        <testsuite name="Zf2 Test Toolkit">
             <directory>./test/phpunit/tests</directory>
         </testsuite>
     </testsuites>
