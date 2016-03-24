@@ -66,6 +66,19 @@ class InitTestAppListener extends AbstractListenerAggregate implements PHPUnit_F
     }
 
     /**
+     * Обнуляет стартовые параметры класса
+     *
+     * @return void
+     */
+    public static function reset()
+    {
+        static::$flagInitData = false;
+        static::$connectionName = null;
+        static::$driverClass = null;
+        static::$params = null;
+    }
+
+    /**
      * Возвращает имя соеденения доктрины
      *
      * @return string

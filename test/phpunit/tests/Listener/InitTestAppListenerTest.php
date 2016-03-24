@@ -16,9 +16,22 @@ use Zend\Mvc\MvcEvent;
  * Class InitTestAppListenerTest
  *
  * @package Nnx\ZF2TestToolkit\PhpUnit\Test\Listener
+ *
+*  @backupStaticAttributes enabled
  */
 class InitTestAppListenerTest extends PHPUnit_Framework_TestCase
 {
+
+    /**
+     * @inheritdoc
+     * @return void
+     */
+    public function setUp()
+    {
+        InitTestAppListener::reset();
+        parent::setUp();
+    }
+
     /**
      * Проврека создания обработчика отвечающего за настройку конфигов из доктрины
      */
