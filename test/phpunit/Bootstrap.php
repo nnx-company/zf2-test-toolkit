@@ -1,6 +1,6 @@
 <?php
 /**
- * @link    https://github.com/nnx-company/zf2-test-toolkit
+ * @link    https://github.com/nnx-framework/zf2-test-toolkit
  * @author  Malofeykin Andrey  <and-rey2@yandex.ru>
  */
 namespace Nnx\ZF2TestToolkit\PhpUnit\Test;
