@@ -17,8 +17,9 @@ Develop:
 
 # Описание модуля
 
-Набор утилит и сервисов для тестирования приложений на zf2
+Набор утилит и сервисов для тестирования приложений на zf2. Тестирование приложений использующех Doctrine2.
 
 # Документация
 - [Online documentation](http://nnx-zf2-test-toolkit.readthedocs.org/ru/dev/)
 - [Documentation source files](doc/book/ru/)
+
