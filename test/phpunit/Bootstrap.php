@@ -57,7 +57,8 @@ class Bootstrap
                     'autoregister_zf' => true,
                     'namespaces' => [
                         'Nnx\\ZF2TestToolkit\\' => __DIR__ . '/../../src/',
-                        __NAMESPACE__ => __DIR__ . '/tests/'
+                        __NAMESPACE__ => __DIR__ . '/tests/',
+                        'Nnx\\ZF2TestToolkit\\PhpUnit\\TestData' => __DIR__ . '/_files'
                     ]
                 ]
             ]);
