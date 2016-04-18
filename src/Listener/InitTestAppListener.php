@@ -24,44 +24,23 @@ use PHPUnit_Framework_TestListener;
 class InitTestAppListener extends AbstractListenerAggregate implements PHPUnit_Framework_TestListener
 {
     /**
-     * Имя соеденения доктрины
-     *
-     * @var string
-     */
-    protected static $connectionName;
-
-    /**
-     * Имя класса драйвера
-     *
-     * @var string
-     */
-    protected static $driverClass;
-
-    /**
-     * Набор параметров подключения
+     * Ключем явялется имя соеденения, а значением массив, описывающий его характеристики
      *
      * @var array
      */
-    protected static $params;
-
-    /**
-     * Флаг определяющий был ли установленны данные при запуске phpunit
-     *
-     * @var bool
-     */
-    protected static $flagInitData = false;
+    protected static $connectionParams = [];
 
     /**
      * @inheritDoc
      */
     public function __construct($connectionName = null, $driverClass = null, array $params = [])
     {
-        if (!static::$flagInitData) {
-            static::$connectionName = $connectionName;
-            static::$driverClass = $driverClass;
-            static::$params = $params;
-
-            static::$flagInitData = true;
+        if (null !== $connectionName && !array_key_exists($connectionName, static::$connectionParams)) {
+            static::$connectionParams[$connectionName] = [
+                'connectionName' => $connectionName,
+                'driverClass' => $driverClass,
+                'params' => $params
+            ];
         }
     }
 
@@ -72,40 +51,7 @@ class InitTestAppListener extends AbstractListenerAggregate implements PHPUnit_F
      */
     public static function reset()
     {
-        static::$flagInitData = false;
-        static::$connectionName = null;
-        static::$driverClass = null;
-        static::$params = null;
-    }
-
-    /**
-     * Возвращает имя соеденения доктрины
-     *
-     * @return string
-     */
-    public function getConnectionName()
-    {
-        return static::$connectionName;
-    }
-
-    /**
-     * Возвращает имя класса драйвера
-     *
-     * @return string
-     */
-    public function getDriverClass()
-    {
-        return static::$driverClass;
-    }
-
-    /**
-     * Возвращает набор параметров подключения
-     *
-     * @return array
-     */
-    public function getParams()
-    {
-        return static::$params;
+        static::$connectionParams = [];
     }
 
     /**
@@ -126,25 +72,24 @@ class InitTestAppListener extends AbstractListenerAggregate implements PHPUnit_F
      */
     public function onBootstrap(MvcEvent $e)
     {
-        $connectionName = $this->getConnectionName();
-        $driverClass = $this->getDriverClass();
-        $params = $this->getParams();
-
         /** @var ServiceManager $sm */
         $sm = $e->getApplication()->getServiceManager();
         $appConfig = $sm->get('Config');
 
-        $data = [
-            'doctrine' => [
-                'connection' => [
-                    $connectionName => [
-                        'driverClass' => $driverClass,
-                        'params' => $params
+        $newAppConfig = $appConfig;
+        foreach (static::$connectionParams as $connectionName => $paramsItem) {
+            $data = [
+                'doctrine' => [
+                    'connection' => [
+                        $paramsItem['connectionName'] => [
+                            'driverClass' => $paramsItem['driverClass'],
+                            'params' => $paramsItem['params']
+                        ]
                     ]
                 ]
-            ]
-        ];
-        $newAppConfig = ArrayUtils::merge($appConfig, $data);
+            ];
+            $newAppConfig = ArrayUtils::merge($newAppConfig, $data);
+        }
 
         $originalAllowOverride = $sm->getAllowOverride();
         $sm->setAllowOverride(true);

@@ -25,6 +25,7 @@ class StopDoctrineLoadCliPostEventListenerTest  extends AbstractConsoleControlle
      * Тест проверяет работу Listener'a отключающего регистарцию компонента работы с консолью модуля https://github.com/doctrine/DoctrineORMModule
      *
      *
+     * @throws \Zend\Stdlib\Exception\LogicException
      */
     public function testStopDoctrineLoadCliPostEvent()
     {
