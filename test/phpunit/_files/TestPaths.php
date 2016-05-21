@@ -21,4 +21,14 @@ class TestPaths
     {
         return  __DIR__ . '/../_files/DoctrineCliApp/application.config.php';
     }
+    /**
+     * Путь до конфига для тестирования возможности перегрузки конфигов
+     *
+     * @return string
+     */
+    public static function getPathToTestOverrideConfigApp()
+    {
+        return  __DIR__ . '/../_files/TestOverrideConfigApp/config/application.config.php';
+    }
+
 }
