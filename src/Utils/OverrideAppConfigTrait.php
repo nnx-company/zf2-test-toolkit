@@ -5,11 +5,10 @@
  */
 namespace Nnx\ZF2TestToolkit\Utils;
 
-use Nnx\ZF2TestToolkit\Listener\CallbacksListenerAggregate;
-use Zend\Mvc\MvcEvent;
+use Zend\ModuleManager\ModuleEvent;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Stdlib\ArrayUtils;
-use Ramsey\Uuid\Uuid;
+
 
 /**
  * Class OverrideAppConfigTrait
@@ -18,6 +17,20 @@ use Ramsey\Uuid\Uuid;
  */
 trait OverrideAppConfigTrait
 {
+    /**
+     * ServiceListener
+     *
+     * @var ServiceListenerForTest
+     */
+    protected $serviceListenerForTest;
+
+    /**
+     * Конфиги для переопределения, конфига приложения
+     *
+     * @var array
+     */
+    protected $overrideConfigs = [];
+
     /**
      * Устанавливает конфиг приолжения
      *
@@ -46,40 +59,81 @@ trait OverrideAppConfigTrait
     {
         $applicationConfig = $this->getApplicationConfig();
 
-        if (is_array($applicationConfig)) {
-            $listenerName = 'bootstrapAppHandler_' . Uuid::uuid4()->toString();
-
+        if (is_array($applicationConfig) && !isset($applicationConfig['service_manager']['factories']['ServiceListenerInterface'])) {
             $appConfig = ArrayUtils::merge($applicationConfig, [
-                'listeners' => [
-                    $listenerName
-                ],
                 'service_manager' => [
-                    'services' => [
-                        $listenerName => new CallbacksListenerAggregate([
-                            MvcEvent::EVENT_BOOTSTRAP => [
-                                [
-                                    'handler' => function (MvcEvent $e) use ($newConfig) {
-                                        /** @var ServiceManager $sm */
-                                        $sm = $e->getApplication()->getServiceManager();
-                                        $baseAppConfig = $sm->get('Config');
-
-                                        $appConfig = ArrayUtils::merge($baseAppConfig, $newConfig);
-
-
-                                        $originalAllowOverride = $sm->getAllowOverride();
-                                        $sm->setAllowOverride(true);
-                                        $sm->setService('config', $appConfig);
-                                        $sm->setAllowOverride($originalAllowOverride);
-
-                                    }
-                                ]
-                            ]
-                        ])
+                    'factories' => [
+                        'ServiceListenerInterface' => [$this, 'serviceListenerInterfaceFactory'],
                     ]
                 ]
             ]);
 
             $this->setApplicationConfig($appConfig);
         }
+
+        $this->addOverrideConfig($newConfig);
+    }
+
+
+    /**
+     * Метод фабрика, отвечающий за создание ServiceListener
+     *
+     * @param ServiceManager $sm
+     *
+     * @return ServiceListenerForTest
+     */
+    public function serviceListenerInterfaceFactory(ServiceManager $sm)
+    {
+        if ($this->serviceListenerForTest) {
+            return $this->serviceListenerForTest;
+        }
+
+        $this->serviceListenerForTest = new ServiceListenerForTest($sm);
+        $this->serviceListenerForTest->setOverrideAppConfigHandler([$this, 'overrideAppConfigHandler']);
+
+        return $this->serviceListenerForTest;
+    }
+
+    /**
+     * Добавляет конфиг, который будет переопределять, конфиг приложения
+     *
+     * @param array $overrideConfigs
+     *
+     * @return $this
+     */
+    protected function addOverrideConfig(array $overrideConfigs = [])
+    {
+        $this->overrideConfigs[] = $overrideConfigs;
+
+        return $this;
+    }
+
+    /**
+     * Наборк конфигов, которые заменяют конфиг приложения
+     *
+     * @return array
+     */
+    public function getOverrideConfigs()
+    {
+        return $this->overrideConfigs;
+    }
+
+
+    /**
+     * Обработчик события загрузки всех модулей
+     *
+     * @param ModuleEvent $e
+     */
+    public function overrideAppConfigHandler(ModuleEvent $e)
+    {
+        $configListener = $e->getConfigListener();
+        $baseAppConfig         = $configListener->getMergedConfig(false);
+
+        $overrideConfigs = $this->getOverrideConfigs();
+        foreach ($overrideConfigs as $overrideConfig) {
+            $baseAppConfig = ArrayUtils::merge($baseAppConfig, $overrideConfig);
+        }
+
+        $configListener->setMergedConfig($baseAppConfig);
     }
 }
